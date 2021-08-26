@@ -117,8 +117,8 @@ class Signaling {
     };
   }
   void initializeRenders(RTCVideoRenderer localRender, RTCVideoRenderer remoteRender){
-    localRender = localRender;
-    remoteRender = remoteRender;
+    this.localRender = localRender;
+    this.remoteRender = remoteRender;
     localRender.initialize();
     remoteRender.initialize();
   }

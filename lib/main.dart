@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'di/injection.dart';
 import 'feature/call_page/presentation/pages/call_page.dart';
+import 'feature/contacts/presentation/pages/contacts.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CallPage(),
+      home: ContactsList(),
     );
   }
 }

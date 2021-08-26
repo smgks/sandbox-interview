@@ -20,6 +20,14 @@ class _CallPageState extends State<CallPage> {
   RTCVideoRenderer localRender = RTCVideoRenderer();
   RTCVideoRenderer remoteRender = RTCVideoRenderer();
 
+  Future<bool> initialize() async {
+    signaling.initializeRenders(localRender, remoteRender);
+    await signaling.initializeMedia();
+    signaling.establishWSConnection();
+    await signaling.cretePeerConnection();
+    return true;
+  }
+
   @override
   void initState(){
     super.initState();
@@ -53,13 +61,7 @@ class _CallPageState extends State<CallPage> {
               color: Colors.amber,
             ),
             FutureBuilder<bool>(
-              future: () async {
-                signaling.initializeRenders(localRender, remoteRender);
-                await signaling.initializeMedia();
-                signaling.establishWSConnection();
-                await signaling.cretePeerConnection();
-                return true;
-              }(),
+              future: initialize(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
