@@ -1,18 +1,32 @@
-import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:flutter_sandbox/feature/call_page/domain/entities/offer.dart';
 
-class Offer {
-  Offer({
-    required this.sdp,
-    required this.type,
-    required this.fromID,
-    required this.toID,
-  });
+class OfferModel extends Offer{
+  OfferModel({
+    required String sdp,
+    required String type,
+    required String fromID,
+    required String toID,
+  }): super(sdp: sdp,type: type,fromID: fromID, toID: toID);
 
-  final String sdp;
-  final String type;
-  final String fromID;
-  final String toID;
 
-  RTCSessionDescription toRTCSessionDescription() =>
-      RTCSessionDescription(sdp, type);
+  Map<String,dynamic> toJson() => {
+    'sdp':sdp,
+    'type':type,
+    'fromID':fromID,
+    'toID':fromID,
+  };
+
+  factory OfferModel.fromJson(Map<String,dynamic> data) => OfferModel(
+    sdp : data['sdp'] as String,
+    type: data['type'] as String,
+    fromID: data['fromID'] as String,
+    toID: data['toID'] as String,
+  );
+
+  factory OfferModel.fromDomain(Offer parent) => OfferModel(
+    sdp : parent.sdp,
+    type: parent.type,
+    fromID: parent.fromID,
+    toID: parent.toID,
+  );
 }

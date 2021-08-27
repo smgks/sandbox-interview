@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter_sandbox/core/ws_connection.dart';
+import 'package:flutter_sandbox/feature/call_page/data/models/message.dart';
 import 'package:flutter_sandbox/feature/call_page/domain/entities/message.dart';
 import 'package:flutter_sandbox/feature/call_page/presentation/manager/configuration.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -18,21 +18,21 @@ class MessageType {
 @singleton
 class Signaling {
   String _id = randomNumeric(12);
+  final ConnectionWS _connectionWS;
   WebSocketChannel? signalingWS;
   RTCPeerConnection? peerConnection;
   MediaStream? _localStream;
   RTCVideoRenderer? localRender;
   RTCVideoRenderer? remoteRender;
-  final String signalingServerUrl;
 
   bool _videoMuted = false;
   bool _micMuted = false;
 
-  Signaling(@Named('baseUrl') this.signalingServerUrl);
+  Signaling(this._connectionWS);
 
   void _onMessage(dynamic event) {
     var messageString = json.decode(event);
-    var message = Message.fromJson(messageString as Map<String,dynamic>);
+    var message = MessageModel.fromJson(messageString as Map<String,dynamic>);
     switch (message.type) {
       case MessageType.offer: {
         _onOffer(message.content as Map<String, dynamic>);
@@ -52,7 +52,7 @@ class Signaling {
   Future<void> _sendOffer() async {
     var offer = await peerConnection!.createOffer({});
     await peerConnection!.setLocalDescription(offer);
-    var message = Message.offer(offer.toMap());
+    var message = MessageModel.offer(offer.toMap());
     signalingWS!.sink.add(json.encode(message.toJson()));
   }
 
@@ -82,7 +82,7 @@ class Signaling {
     candidateMap.addEntries([
       MapEntry('from', _id),
     ]);
-    var message = Message.candidate(candidateMap);
+    var message = MessageModel.candidate(candidateMap);
     signalingWS!.sink.add(json.encode(message.toJson()));
   }
   void _onCandidate(Map<String, dynamic> data) {
@@ -131,7 +131,7 @@ class Signaling {
   void establishWSConnection(){
     if (signalingWS != null)
       return;
-    signalingWS = WebSocketChannel.connect(Uri.parse(signalingServerUrl));
+    // signalingWS = WebSocketChannel.connect(Uri.parse(signalingServerUrl));
     signalingWS!.stream.listen(_onMessage);
   }
 

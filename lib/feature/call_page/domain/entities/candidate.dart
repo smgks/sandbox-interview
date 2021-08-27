@@ -1,6 +1,8 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class Candidate {
+import 'message.dart';
+
+class Candidate extends MsgContentBase{
   Candidate({
     required this.candidate,
     required this.sdpMid,

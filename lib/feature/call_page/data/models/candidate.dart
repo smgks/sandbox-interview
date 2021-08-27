@@ -1,16 +1,27 @@
-import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:flutter_sandbox/feature/call_page/domain/entities/candidate.dart';
 
-class Candidate {
-  Candidate({
-    required this.candidate,
-    required this.sdpMid,
-    required this.sdpMlineIndex,
-  });
+class CandidateModel extends Candidate{
+  CandidateModel({
+    required String candidate,
+    required String sdpMid,
+    required int sdpMlineIndex,
+  }) : super(candidate: candidate,sdpMid: sdpMid,sdpMlineIndex: sdpMlineIndex);
 
-  final String candidate;
-  final String sdpMid;
-  final int sdpMlineIndex;
+  Map<String,dynamic> toJson() => {
+    'candidate':candidate,
+    'sdpMid':sdpMid,
+    'sdpMlineIndex':sdpMlineIndex,
+  };
 
-  RTCIceCandidate toRTCIceCandidate() =>
-      RTCIceCandidate(candidate, sdpMid,sdpMlineIndex);
+  factory CandidateModel.fromJson(Map<String,dynamic> data) => CandidateModel(
+    candidate : data['candidate'] as String,
+    sdpMid: data['sdpMid'] as String,
+    sdpMlineIndex: data['sdpMlineIndex'] as int,
+  );
+
+  factory CandidateModel.fromDomain(Candidate parent) => CandidateModel(
+      candidate: parent.candidate,
+      sdpMid: parent.sdpMid,
+      sdpMlineIndex: parent.sdpMlineIndex
+  );
 }

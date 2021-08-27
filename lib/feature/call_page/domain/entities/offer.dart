@@ -1,6 +1,8 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class Offer {
+import 'message.dart';
+
+class Offer extends MsgContentBase{
   Offer({
     required this.sdp,
     required this.type,
