@@ -11,6 +11,9 @@ class ConnectionWS {
   Stream get messages => _controller.stream;
 
   void connect() {
+    if (_socket != null && _socket!.closeCode != null) {
+      return ;
+    }
     _socket = WebSocketChannel.connect(
         Uri.parse(getIt<String>(instanceName: 'baseUrl'))
     );
@@ -28,14 +31,16 @@ class ConnectionWS {
   }
 
   void _onMessage(dynamic data) {
+    _controller.sink.add(data);
   }
 
   
   void _onDisconnect(data) {
+    connect();
     print('closed');
   }
 
   void _onConnect() {
-
+    print('connected');
   }
 }
