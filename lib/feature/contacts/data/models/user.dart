@@ -7,7 +7,7 @@ class UserModel extends User {
   }) : super(name, id);
 
   factory UserModel.fromJson(Map<String,dynamic> data) => UserModel(
-    id: data['id'],
+    id: data['name'],
     name: data['id'],
   );
 

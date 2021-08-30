@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
-import 'package:flutter_sandbox/feature/contacts/domain/repository/repository.dart';
+import 'package:flutter_sandbox/feature/contacts/domain/repositories/repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 
@@ -15,6 +15,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   StreamSubscription? _streamSubscription;
 
   ContactsBloc(this._repository) : super(ContactsInitial.empty()){
+    add(InitiateConnectionEvent());
     _streamSubscription = _repository.userUpdates.listen((event) {
       add(_UsersChangedEvent(event));
     });
@@ -30,8 +31,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     ContactsEvent event,
   ) async* {
     if (event is InitiateConnectionEvent) {
-      // TODO : get from local ds
-      _repository.initStatus(User('test','test'));
+      _repository.initStatus();
     } else if (event is DropConnectionEvent) {
       _repository.cancel();
     } else if (event is _UsersChangedEvent) {

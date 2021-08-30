@@ -1,22 +1,34 @@
+import 'package:flutter_sandbox/feature/contacts/data/data_sources/local_datasource.dart';
 import 'package:flutter_sandbox/feature/contacts/data/data_sources/ws_source.dart';
 import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
-import 'package:flutter_sandbox/feature/contacts/domain/repository/repository.dart';
+import 'package:flutter_sandbox/feature/contacts/domain/repositories/repository.dart';
+
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: IRepository)
 class Repository extends IRepository {
-  final WsSource _source;
+  final WsSource _wsSource;
+  final LocalUserDataSource _localDataSource;
 
-  Repository(this._source);
+  Repository(this._wsSource, this._localDataSource);
 
-  Stream<Set<User>> get userUpdates => _source.userUpdates;
+  Stream<Set<User>> get userUpdates => _wsSource.userUpdates;
 
   @override
-  void initStatus(User owner) {
-    _source.listenUsers(owner);
+  void initStatus() {
+    _wsSource.listenUsers(getLocalUser());
+  }
+
+  @override
+  User getLocalUser() {
+    var localUser =  _localDataSource.receiveCached();
+    return User(
+        localUser.username,
+        localUser.idString
+    );
   }
 
   void cancel() {
-    _source.stopListening();
+    _wsSource.stopListening();
   }
 }

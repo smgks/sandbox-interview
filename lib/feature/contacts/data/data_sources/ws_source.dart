@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_sandbox/core/messages/message.dart';
+import 'package:flutter_sandbox/core/messages/status.dart';
 import 'package:flutter_sandbox/core/ws_connection.dart';
-import 'package:flutter_sandbox/feature/contacts/data/models/user.dart';
 import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,6 +16,7 @@ class WsSource {
   final ConnectionWS _connectionWS;
   Map<User,DateTime> users = {};
   Timer? _timer;
+  User? _owner;
   StreamSubscription? _streamSubscription;
   StreamController<Set<User>> _controller = StreamController();
   Stream<Set<User>> get userUpdates => _controller.stream;
@@ -22,19 +24,29 @@ class WsSource {
 
   void listenUsers(User owner) {
     assert(_streamSubscription == null);
-    _streamSubscription = _connectionWS.messages.listen((event) {
-      var message = json.decode(event as String);
-      var user = UserModel.fromJson(message);
-      if (users.containsKey(user)){
+    _owner = owner;
+    _connectionWS.connect();
+    _streamSubscription = _connectionWS.messages.listen(handleMessage);
+    _timer = Timer.periodic(Duration(seconds: 5), timerTick);
+  }
+
+  void timerTick(timer) {
+    checkOnline();
+    isAliveEvent(_owner!);
+  }
+
+  void handleMessage(event) {
+    print(event);
+    var messageRaw = json.decode(event as String);
+    var message = Message.fromJson(messageRaw);
+    if (message.type == MessageType.status){
+      var userData = message.content as Status;
+      var user = User(userData.user, userData.id);
+      if (users.containsKey(user)) {
         _controller.add(users.keys.toSet());
       }
-      users[UserModel.fromJson(message)] = DateTime.now();
-      checkOnline();
-    });
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-      checkOnline();
-      isAliveEvent(owner);
-    });
+      users[user] = DateTime.now();
+    }
   }
 
   void stopListening() {
@@ -51,7 +63,13 @@ class WsSource {
   }
 
   void isAliveEvent(User owner) {
-    _connectionWS.send('temp');
-    print('temp');
+    _connectionWS.send(
+        json.encode(Message.status(
+            Status(
+              user: owner.name,
+              id: owner.id
+            )
+        ).toJson())
+    );
   }
 }
