@@ -1,23 +1,15 @@
 import 'dart:convert';
 
+import 'package:flutter_sandbox/core/messages/candidate.dart';
+import 'package:flutter_sandbox/core/messages/message.dart';
 import 'package:flutter_sandbox/core/ws_connection.dart';
-import 'package:flutter_sandbox/feature/call_page/data/models/message.dart';
-import 'package:flutter_sandbox/feature/call_page/domain/entities/message.dart';
 import 'package:flutter_sandbox/feature/call_page/presentation/manager/configuration.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:random_string/random_string.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-class MessageType {
-  static const String offer = 'offer';
-  static const String answer = 'answer';
-  static const String candidate = 'candidate';
-}
 
 @singleton
 class Signaling {
-  String _id = randomNumeric(12);
   final ConnectionWS _connectionWS;
   WebSocketChannel? signalingWS;
   RTCPeerConnection? peerConnection;
@@ -32,17 +24,17 @@ class Signaling {
 
   void _onMessage(dynamic event) {
     var messageString = json.decode(event);
-    var message = MessageModel.fromJson(messageString as Map<String,dynamic>);
+    var message = Message.fromJson(messageString as Map<String,dynamic>);
     switch (message.type) {
-      case MessageType.offer: {
+      case 'offer': {
         _onOffer(message.content as Map<String, dynamic>);
       }
       break;
-      case MessageType.answer: {
+      case 'answer': {
         _onAnswer(message.content as Map<String, dynamic>);
       }
       break;
-      case MessageType.candidate: {
+      case 'candidate': {
         _onCandidate(message.content as Map<String, dynamic>);
       }
       break;
@@ -52,7 +44,7 @@ class Signaling {
   Future<void> _sendOffer() async {
     var offer = await peerConnection!.createOffer({});
     await peerConnection!.setLocalDescription(offer);
-    var message = MessageModel.offer(offer.toMap());
+    var message = Message.offer(offer.toMap());
     signalingWS!.sink.add(json.encode(message.toJson()));
   }
 
@@ -78,11 +70,13 @@ class Signaling {
     );
   }
   void _addCandidate(RTCIceCandidate candidate){
-    Map<String,dynamic> candidateMap = candidate.toMap();
-    candidateMap.addEntries([
-      MapEntry('from', _id),
-    ]);
-    var message = MessageModel.candidate(candidateMap);
+
+    var candidateModel = Candidate(
+        candidate: candidate.candidate ?? '',
+        sdpMid: candidate.sdpMid ?? '',
+        sdpMlineIndex: candidate.sdpMlineIndex ?? 0,
+    );
+    var message = Message.candidate(candidateModel);
     signalingWS!.sink.add(json.encode(message.toJson()));
   }
   void _onCandidate(Map<String, dynamic> data) {
