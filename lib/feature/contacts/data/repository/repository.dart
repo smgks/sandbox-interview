@@ -1,6 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter_sandbox/core/hive_models/user.dart';
+import 'package:flutter_sandbox/core/messages/message.dart';
 import 'package:flutter_sandbox/feature/contacts/data/data_sources/local_datasource.dart';
 import 'package:flutter_sandbox/feature/contacts/data/data_sources/ws_source.dart';
-import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
 import 'package:flutter_sandbox/feature/contacts/domain/repositories/repository.dart';
 
 import 'package:injectable/injectable.dart';
@@ -10,25 +13,38 @@ class Repository extends IRepository {
   final WsSource _wsSource;
   final LocalUserDataSource _localDataSource;
 
-  Repository(this._wsSource, this._localDataSource);
+  Repository(
+      this._wsSource,
+      this._localDataSource,
+    );
 
   Stream<Set<User>> get userUpdates => _wsSource.userUpdates;
 
   @override
-  void initStatus() {
+  void initStatus(void Function(Message) onOffer) {
     _wsSource.listenUsers(getLocalUser());
+    _wsSource.messages.listen((message){
+      if(message.type == 'offer' && message.from != _localDataSource.receiveCached()){
+        onOffer(message);
+      }
+    });
   }
 
   @override
   User getLocalUser() {
     var localUser =  _localDataSource.receiveCached();
     return User(
-        localUser.username,
-        localUser.idString
+        username: localUser.username,
+        idString: localUser.idString
     );
   }
 
   void cancel() {
-    _wsSource.stopListening();
+    _wsSource.close();
+  }
+
+  @override
+  Future<void> logout() async {
+    await _localDataSource.removeCached();
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CallOffer extends StatelessWidget{
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +11,7 @@ class CallOffer extends StatelessWidget{
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            
+
             children: [
               Card(
                 child: ListTile(

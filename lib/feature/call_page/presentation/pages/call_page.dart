@@ -1,79 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sandbox/core/hive_models/user.dart';
+import 'package:flutter_sandbox/core/messages/offer.dart';
 import 'package:flutter_sandbox/di/injection.dart';
-import 'package:flutter_sandbox/feature/call_page/presentation/manager/signaling.dart';
+import 'package:flutter_sandbox/feature/call_page/presentation/bloc/call_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class CallPage extends StatefulWidget {
-  @override
-  _CallPageState createState() => _CallPageState();
-}
+class CallPage extends StatelessWidget {
+  final User toUser;
+  final Offer? offer;
+  CallPage(this.toUser, {this.offer});
 
-class _CallPageState extends State<CallPage> {
-  final Signaling signaling = getIt<Signaling>();
-  RTCVideoRenderer localRender = RTCVideoRenderer();
-  RTCVideoRenderer remoteRender = RTCVideoRenderer();
-
-  Future<bool> initialize() async {
-    signaling.initializeRenders(localRender, remoteRender);
-    await signaling.initializeMedia();
-    signaling.establishWSConnection();
-    await signaling.cretePeerConnection();
-    return true;
-  }
-
-  @override
-  void initState(){
-    super.initState();
-  }
+  final CallBloc bloc = getIt<CallBloc>();
+  final RTCVideoRenderer localRender = RTCVideoRenderer();
+  final RTCVideoRenderer remoteRender = RTCVideoRenderer();
 
   @override
   Widget build(BuildContext context) {
     var padding = MediaQuery.of(context).padding;
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              child: Column(
+      body: BlocBuilder<CallBloc, CallState>(
+        bloc: bloc,
+        builder: (context, state) {
+          if (state is CallInitial) {
+            bloc.add(
+                InitCallEvent(
+                  localRender: localRender,
+                  remoteRender: remoteRender,
+                  toUser: toUser,
+                  offer: offer
+                )
+            );
+          }
+          if (state is CallPrepared) {
+            return SafeArea(
+              child: Stack(
                 children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height - padding.top - padding.bottom,
-                        maxWidth: MediaQuery.of(context).size.width - padding.left - padding.right
+                  Container(
+                    child: Column(
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height - padding.top - padding.bottom,
+                              maxWidth: MediaQuery.of(context).size.width - padding.left - padding.right
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 9/16,
+                            child: RTCVideoView(
+                                remoteRender
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Container())
+                      ],
                     ),
+                    color: Colors.amber,
+                  ),
+                  Container(
+                    color: Colors.indigo,
+                    height: 120,
                     child: AspectRatio(
                       aspectRatio: 9/16,
                       child: RTCVideoView(
-                          remoteRender
+                          localRender
                       ),
                     ),
                   ),
-                  Expanded(child: Container())
                 ],
               ),
-              color: Colors.amber,
-            ),
-            FutureBuilder<bool>(
-              future: initialize(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return Container(
-                  color: Colors.indigo,
-                  height: 120,
-                  child: AspectRatio(
-                    aspectRatio: 9/16,
-                    child: RTCVideoView(
-                        localRender
-                    ),
-                  ),
-                );
-              }
-            ),
-          ],
-        ),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
@@ -104,8 +105,7 @@ class _CallPageState extends State<CallPage> {
           SizedBox(width: 16,),
           FloatingActionButton(
             onPressed: () async {
-              signaling.createCall('123');
-              setState(() {});
+              
             },
             tooltip: 'Increment',
             child: SvgPicture.asset(

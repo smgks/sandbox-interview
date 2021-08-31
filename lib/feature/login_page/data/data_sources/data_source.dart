@@ -4,8 +4,8 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class LocalDataSource {
-  var box = Hive.box('user_chache');
-  var key = 'user_chache';
+  var box = Hive.box('user_cache');
+  var key = 'user_cache';
   User? receiveCached() {
     return box.get(key) as User?;
   }

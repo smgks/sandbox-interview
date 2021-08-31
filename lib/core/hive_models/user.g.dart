@@ -18,6 +18,7 @@ class UserAdapter extends TypeAdapter<User> {
     };
     return User(
       username: fields[0] as String,
+      idString: fields[1] as String,
     );
   }
 

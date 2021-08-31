@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_sandbox/core/hive_models/user.dart';
 import 'package:flutter_sandbox/core/messages/message.dart';
 import 'package:flutter_sandbox/core/messages/status.dart';
 import 'package:flutter_sandbox/core/ws_connection.dart';
-import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
 import 'package:injectable/injectable.dart';
 
 typedef UserUpdateEvent = void Function(User);
@@ -18,9 +18,10 @@ class WsSource {
   Timer? _timer;
   User? _owner;
   StreamSubscription? _streamSubscription;
-  StreamController<Set<User>> _controller = StreamController();
-  Stream<Set<User>> get userUpdates => _controller.stream;
-
+  StreamController<Set<User>> _userController = StreamController();
+  StreamController<Message> _messageController = StreamController();
+  Stream<Set<User>> get userUpdates => _userController.stream;
+  Stream<Message> get messages => _messageController.stream;
 
   void listenUsers(User owner) {
     assert(_streamSubscription == null);
@@ -41,24 +42,33 @@ class WsSource {
     var message = Message.fromJson(messageRaw);
     if (message.type == MessageType.status){
       var userData = message.content as Status;
-      var user = User(userData.user, userData.id);
-      if (users.containsKey(user)) {
-        _controller.add(users.keys.toSet());
+      var user = User(username: userData.user, idString: userData.id);
+      if (user == _owner) {
+        return;
       }
       users[user] = DateTime.now();
+      _userController.sink.add(users.keys.toSet());
+    } else {
+      _messageController.sink.add(message);
     }
   }
 
-  void stopListening() {
+  void close() {
+    _userController.close();
+    _messageController.close();
     _streamSubscription!.cancel();
     _timer!.cancel();
   }
 
   void checkOnline() {
+    List<User> toRemove = [];
     users.keys.forEach((User key) {
       if (DateTime.now().millisecondsSinceEpoch - users[key]!.millisecondsSinceEpoch > 15000){
-        users.remove(key);
+        toRemove.add(key);
       }
+    });
+    toRemove.forEach((element) {
+      users.remove(element);
     });
   }
 
@@ -66,8 +76,8 @@ class WsSource {
     _connectionWS.send(
         json.encode(Message.status(
             Status(
-              user: owner.name,
-              id: owner.id
+              user: owner.username,
+              id: owner.idString
             )
         ).toJson())
     );

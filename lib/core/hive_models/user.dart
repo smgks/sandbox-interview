@@ -8,6 +8,11 @@ part 'user.g.dart';
 class User extends Equatable {
   User({
     required this.username,
+    required this.idString
+  });
+
+  User._({
+    required this.username,
   }) : idString = randomNumeric(16);
 
   @HiveField(0)
@@ -19,5 +24,15 @@ class User extends Equatable {
   @override
   List<Object?> get props => [username, idString];
 
-  factory User.fromString(String username) => User(username: username);
+  factory User.fromString(String username) => User._(username: username);
+
+  Map<String,dynamic> toJson() => {
+    'username': username,
+    'idString': username,
+  };
+
+  factory User.fromJson(Map<String, dynamic> data) => User(
+      username: data['username'],
+      idString: data['idString']
+  );
 }

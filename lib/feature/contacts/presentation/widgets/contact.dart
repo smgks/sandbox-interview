@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sandbox/core/hive_models/user.dart';
+import 'package:flutter_sandbox/feature/call_page/presentation/pages/call_page.dart';
+import 'package:flutter_sandbox/feature/contacts/presentation/bloc/contacts_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ContactWidget extends StatelessWidget{
-  final String name;
-  const ContactWidget({Key? key, required this.name}) : super(key: key);
+  final User contact;
+  const ContactWidget({Key? key, required this.contact}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +18,27 @@ class ContactWidget extends StatelessWidget{
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(child: Text(name)),
-            Transform.rotate(
-              angle: -2.4,
-              child: SvgPicture.asset(
-                  'assets/end-call.svg',
-                  semanticsLabel: 'Acme Logo',
-                  color: Colors.green
+            Expanded(child: Text(contact.username)),
+            InkWell(
+              onTap: () {
+                BlocProvider.of<ContactsBloc>(context).add(DropConnectionEvent());
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CallPage(contact),
+                    )
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Transform.rotate(
+                  angle: -2.4,
+                  child: SvgPicture.asset(
+                      'assets/end-call.svg',
+                      semanticsLabel: 'Acme Logo',
+                      color: Colors.green
+                  ),
+                ),
               ),
             ),
           ],
@@ -28,5 +46,4 @@ class ContactWidget extends StatelessWidget{
       ),
     );
   }
-
 }

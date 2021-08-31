@@ -20,7 +20,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-
     if (event is CheckRegistered) {
       if (_repository.isUserRegistered()) {
         yield LoginIn(_repository.receiveCached());

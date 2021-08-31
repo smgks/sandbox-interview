@@ -1,10 +1,15 @@
+import 'package:flutter_sandbox/core/hive_models/user.dart';
 import 'package:flutter_sandbox/core/ws_connection.dart';
 import 'package:flutter_sandbox/di/injection.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 
 void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter<User>(UserAdapter());
+  await Hive.openBox('user_cache');
   configureDependencies();
   test('ws_connection messaging',() async {
     WebSocketChannel? _socket = WebSocketChannel.connect(

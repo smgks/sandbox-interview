@@ -19,3 +19,10 @@ class ContactsInitial extends ContactsState {
 }
 
 class ContactsErrorState extends ContactsState {}
+class OfferReceivedState extends ContactsState {
+  final Offer offer;
+  final User from;
+
+  OfferReceivedState(this.offer, this.from);
+}
+class LogOutState extends ContactsState {}

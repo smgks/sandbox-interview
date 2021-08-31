@@ -8,7 +8,7 @@ import 'feature/login_page/presentation/pages/login_page.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<User>(UserAdapter());
-  await Hive.openBox('user_chache');
+  await Hive.openBox('user_cache');
   configureDependencies();
   runApp(MyApp());
 }

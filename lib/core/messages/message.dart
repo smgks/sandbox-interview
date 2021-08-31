@@ -1,3 +1,4 @@
+import 'package:flutter_sandbox/core/hive_models/user.dart';
 import 'package:flutter_sandbox/core/messages/candidate.dart';
 import 'package:flutter_sandbox/core/messages/offer.dart';
 import 'package:flutter_sandbox/core/messages/status.dart';
@@ -13,32 +14,58 @@ class MessageType {
 class Message {
   final String type;
   final MsgContentBase content;
+  final User? from;
+  final User? to;
 
   Message({
     required this.type,
-    required this.content
+    required this.content,
+    this.from,
+    this.to,
   });
 
-  factory Message.offer(MsgContentBase data) => Message(
+  factory Message.offer(
+      MsgContentBase data, {
+        required User from,
+        required User to,
+      }) => Message(
     type: MessageType.offer,
     content: data,
+    from: from,
+    to: to
   );
-  factory Message.answer(MsgContentBase data) => Message(
-    type: MessageType.answer,
-    content: data,
+  factory Message.answer(
+      MsgContentBase data, {
+        required User from,
+        required User to,
+      }) => Message(
+      type: MessageType.answer,
+      content: data,
+      from: from,
+      to: to
   );
-  factory Message.candidate(MsgContentBase data) => Message(
+  factory Message.candidate(
+      MsgContentBase data, {
+        required User from,
+        required User to,
+      }) => Message(
       type: MessageType.candidate,
-      content: data
+      content: data,
+      from: from,
+      to: to
   );
-  factory Message.status(MsgContentBase data) => Message(
+  factory Message.status(
+      MsgContentBase data
+      ) => Message(
       type: MessageType.status,
-      content: data
+      content: data,
   );
 
   Map<String,dynamic> toJson() => {
     'type': type,
     'content': content.toJson(),
+    'from' : from == null ? null : from!.toJson(),
+    'to' : to == null ? null : to!.toJson(),
   };
 
   factory Message.fromJson(Map<String, dynamic> data) {
@@ -64,8 +91,10 @@ class Message {
     }
     return Message(
       type: type,
-      content: content!
-  );
+      content: content!,
+      from: data['from'] == null ? null : User.fromJson(data['from']),
+      to: data['to'] == null ? null : User.fromJson(data['to']),
+    );
   }
 }
 

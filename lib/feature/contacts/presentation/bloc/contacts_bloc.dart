@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter_sandbox/feature/contacts/domain/entities/user.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_sandbox/core/hive_models/user.dart';
+import 'package:flutter_sandbox/core/messages/message.dart';
+import 'package:flutter_sandbox/core/messages/offer.dart';
 import 'package:flutter_sandbox/feature/contacts/domain/repositories/repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
@@ -31,13 +34,20 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     ContactsEvent event,
   ) async* {
     if (event is InitiateConnectionEvent) {
-      _repository.initStatus();
+      _repository.initStatus((Message message){
+        add(OfferReceivedEvent(message.content as Offer, message.from!));
+      });
     } else if (event is DropConnectionEvent) {
       _repository.cancel();
+    } else if (event is OfferReceivedEvent) {
+      yield OfferReceivedState(event.offer,event.from);
     } else if (event is _UsersChangedEvent) {
       yield ContactsInitial(
         users: event.users
       );
+    } else if (event is LogOutEvent) {
+      await _repository.logout();
+      yield LogOutState();
     }
   }
 }
