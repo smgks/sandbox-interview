@@ -10,7 +10,7 @@ class MessageType {
    static String get status => 'status';
 }
 
-
+/// Base message type
 class Message {
   final String type;
   final MsgContentBase content;
@@ -24,6 +24,7 @@ class Message {
     this.to,
   });
 
+  /// Generate message from Offer
   factory Message.offer(
       MsgContentBase data, {
         required User from,
@@ -34,6 +35,8 @@ class Message {
     from: from,
     to: to
   );
+
+  /// Generate message from Answer
   factory Message.answer(
       MsgContentBase data, {
         required User from,
@@ -44,6 +47,8 @@ class Message {
       from: from,
       to: to
   );
+
+  /// Generate message from Candidate
   factory Message.candidate(
       MsgContentBase data, {
         required User from,
@@ -54,6 +59,8 @@ class Message {
       from: from,
       to: to
   );
+
+  /// Generate message from Status
   factory Message.status(
       MsgContentBase data
       ) => Message(

@@ -22,4 +22,12 @@ class Configuration{
       }
     ]
   };
+
+  static const  Map<String, dynamic> dcConstraints = {
+    'mandatory': {
+      'OfferToReceiveAudio': true,
+      'OfferToReceiveVideo': true,
+    },
+    'optional': [],
+  };
 }

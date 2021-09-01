@@ -6,9 +6,9 @@ abstract class IRepository{
 
   Stream<Set<User>> get userUpdates;
 
-  void cancel();
-
   User getLocalUser();
+
+  Future<void> cancel();
 
   Future<void> logout();
 }

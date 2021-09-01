@@ -1,5 +1,6 @@
 import 'package:flutter_sandbox/core/hive_models/user.dart';
 
+/// Manages user data
 abstract class IRepository {
 
   /// Returns the cached user

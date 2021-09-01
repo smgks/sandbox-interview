@@ -6,6 +6,7 @@ import 'package:flutter_sandbox/feature/call_page/presentation/pages/call_page.d
 import 'package:flutter_sandbox/feature/contacts/presentation/bloc/contacts_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
+/// Presents single contact
 class ContactWidget extends StatelessWidget{
   final User contact;
   const ContactWidget({Key? key, required this.contact}) : super(key: key);
@@ -22,7 +23,7 @@ class ContactWidget extends StatelessWidget{
             InkWell(
               onTap: () {
                 BlocProvider.of<ContactsBloc>(context).add(DropConnectionEvent());
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CallPage(contact),

@@ -12,6 +12,7 @@ import 'package:injectable/injectable.dart';
 class Repository extends IRepository {
   final WsSource _wsSource;
   final LocalUserDataSource _localDataSource;
+  late StreamSubscription _controller;
 
   Repository(
       this._wsSource,
@@ -23,7 +24,7 @@ class Repository extends IRepository {
   @override
   void initStatus(void Function(Message) onOffer) {
     _wsSource.listenUsers(getLocalUser());
-    _wsSource.messages.listen((message){
+    _controller = _wsSource.messages.listen((message){
       if(message.type == 'offer' && message.from != _localDataSource.receiveCached()){
         onOffer(message);
       }
@@ -39,8 +40,9 @@ class Repository extends IRepository {
     );
   }
 
-  void cancel() {
-    _wsSource.close();
+  Future<void> cancel() async {
+    await _controller.cancel();
+    await _wsSource.close();
   }
 
   @override

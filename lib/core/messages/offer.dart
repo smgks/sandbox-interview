@@ -2,6 +2,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import 'message.dart';
 
+/// RTCSessionDescription offer wrapper
 class Offer extends MsgContentBase{
   Offer({
     required this.sdp,

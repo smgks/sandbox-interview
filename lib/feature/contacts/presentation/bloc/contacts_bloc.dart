@@ -15,7 +15,7 @@ part 'contacts_state.dart';
 @injectable
 class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   final IRepository _repository;
-  StreamSubscription? _streamSubscription;
+  late StreamSubscription _streamSubscription;
 
   ContactsBloc(this._repository) : super(ContactsInitial.empty()){
     add(InitiateConnectionEvent());
@@ -25,7 +25,8 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   }
   @override
   Future<void> close() async {
-    _streamSubscription!.cancel();
+    await _repository.cancel();
+    await _streamSubscription.cancel();
     super.close();
   }
 
@@ -38,7 +39,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
         add(OfferReceivedEvent(message.content as Offer, message.from!));
       });
     } else if (event is DropConnectionEvent) {
-      _repository.cancel();
+      await close();
     } else if (event is OfferReceivedEvent) {
       yield OfferReceivedState(event.offer,event.from);
     } else if (event is _UsersChangedEvent) {

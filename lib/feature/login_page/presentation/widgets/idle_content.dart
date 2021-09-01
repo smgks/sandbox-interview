@@ -4,6 +4,7 @@ import 'package:flutter_sandbox/feature/login_page/presentation/bloc/login_page/
 
 import 'login_input.dart';
 
+/// Presents input widget with button
 class IdleContent extends StatelessWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();

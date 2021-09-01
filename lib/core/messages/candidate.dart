@@ -2,6 +2,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import 'message.dart';
 
+/// RTCIceCandidate wrapper
 class Candidate extends MsgContentBase{
   Candidate({
     required this.candidate,

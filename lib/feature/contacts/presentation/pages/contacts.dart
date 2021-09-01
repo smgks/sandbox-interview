@@ -7,18 +7,9 @@ import 'package:flutter_sandbox/feature/contacts/presentation/widgets/contact.da
 import 'package:flutter_sandbox/feature/contacts/presentation/widgets/no_contacts.dart';
 import 'package:flutter_sandbox/feature/login_page/presentation/pages/login_page.dart';
 
-class ContactsList extends StatefulWidget {
-  @override
-  _ContactsListState createState() => _ContactsListState();
-}
-
-class _ContactsListState extends State<ContactsList> {
-  ContactsBloc _bloc = getIt<ContactsBloc>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+/// Presents all contacts list
+class ContactsList extends StatelessWidget {
+  final ContactsBloc _bloc = getIt<ContactsBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +51,17 @@ class _ContactsListState extends State<ContactsList> {
                       }
                       if (state is OfferReceivedState) {
                         BlocProvider.of<ContactsBloc>(context).add(DropConnectionEvent());
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CallPage(
-                                state.from, offer: state.offer,
-                              ),
-                            )
-                        );
+                        Future.delayed(Duration.zero).then((value) async {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CallPage(
+                                  state.from, offer: state.offer,
+                                ),
+                              )
+                          );
+
+                        });
                       }
                       return Container();
                     }

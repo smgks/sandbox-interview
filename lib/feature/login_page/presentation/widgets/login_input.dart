@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sandbox/feature/login_page/presentation/widgets/validators/user_name_validator.dart';
 
+/// Login input
 class LoginInput extends StatelessWidget {
   const LoginInput({
     required this.formKey,

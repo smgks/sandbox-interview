@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:flutter_sandbox/core/hive_models/user.dart';
 import 'package:flutter_sandbox/core/messages/message.dart';
 import 'package:flutter_sandbox/feature/call_page/data/data_sources/local_datasource.dart';
@@ -14,19 +13,19 @@ class Repository extends IRepository{
       LocalUserDataSource localUserDataSource,
       WsSource wsSource
   ) : super(localUserDataSource, wsSource);
-  StreamSubscription? _subscription;
+  late StreamSubscription _subscription;
 
   void send(Message message){
     wsSource.send(message);
   }
 
   void init(void Function(Message) onMessage){
-    assert(_subscription == null);
     wsSource.init();
     _subscription = wsSource.messages.listen(onMessage);
   }
   void close(){
-    _subscription!.cancel();
+    _subscription.cancel();
+    wsSource.close();
   }
 
   User getCachedUser() => localUserDataSource.receiveCached();

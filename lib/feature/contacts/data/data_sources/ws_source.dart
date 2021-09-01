@@ -17,14 +17,13 @@ class WsSource {
   Map<User,DateTime> users = {};
   Timer? _timer;
   User? _owner;
-  StreamSubscription? _streamSubscription;
+  late StreamSubscription _streamSubscription;
   StreamController<Set<User>> _userController = StreamController();
   StreamController<Message> _messageController = StreamController();
   Stream<Set<User>> get userUpdates => _userController.stream;
   Stream<Message> get messages => _messageController.stream;
 
   void listenUsers(User owner) {
-    assert(_streamSubscription == null);
     _owner = owner;
     _connectionWS.connect();
     _streamSubscription = _connectionWS.messages.listen(handleMessage);
@@ -53,10 +52,10 @@ class WsSource {
     }
   }
 
-  void close() {
-    _userController.close();
-    _messageController.close();
-    _streamSubscription!.cancel();
+  Future<void> close() async {
+    await _userController.close();
+    await _messageController.close();
+    await _streamSubscription.cancel();
     _timer!.cancel();
   }
 
@@ -70,6 +69,7 @@ class WsSource {
     toRemove.forEach((element) {
       users.remove(element);
     });
+    _userController.sink.add(users.keys.toSet());
   }
 
   void isAliveEvent(User owner) {

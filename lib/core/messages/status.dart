@@ -1,6 +1,6 @@
-
 import 'message.dart';
 
+/// Describes online status
 class Status extends MsgContentBase{
   Status({
     required this.user,
