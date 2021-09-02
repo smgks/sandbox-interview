@@ -8,7 +8,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<User>(UserAdapter());
   await Hive.openBox('user_cache')
-  ..delete('user_cache');
+    ..delete('user_cache');
   configureDependencies();
 
   test('LoginBloc login', () async {

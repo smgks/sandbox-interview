@@ -15,12 +15,11 @@ void main() async {
 
   test('contacts - status is alive', () async {
     var repo0 = getIt<IRepository>();
-    repo0.initStatus((_){});
+    repo0.initStatus((_) {});
     var messages = 0;
 
     WebSocketChannel? _socket = WebSocketChannel.connect(
-        Uri.parse(getIt<String>(instanceName: 'baseUrl'))
-    );
+        Uri.parse(getIt<String>(instanceName: 'baseUrl')));
 
     _socket.stream.listen((data) {
       var mapData = json.decode(data);
