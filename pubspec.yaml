@@ -9,14 +9,63 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  injectable: ^1.5.0
+  get_it: ^7.2.0
+  flutter_webrtc: ^0.6.5
+  flutter_bloc: ^7.2.0
+  ubuntu_font_flutter: ^0.0.1
+  equatable: ^2.0.3
+  flutter_svg: ^0.22.0
+  hive_flutter: ^1.1.0
+  web_socket_channel: ^2.1.0
+  random_string: ^2.3.1
+  json_serializable: ^4.1.4
+  path_provider: ^2.0.2
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  injectable_generator: ^1.4.1
+  build_runner: ^2.1.1
+  hive_generator: ^1.1.0
+  json_annotation: ^4.0.1
+  integration_test:
+    sdk: flutter
   flutter_test:
+    sdk: flutter
+  flutter_driver:
     sdk: flutter
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Ubuntu
+      fonts:
+        - asset: packages/ubuntu_font_flutter/Ubuntu-R.ttf
+        - asset: packages/ubuntu_font_flutter/Ubuntu-RI.ttf
+          style: italic
+        - asset: packages/ubuntu_font_flutter/Ubuntu-B.ttf
+          weight: 700
+        - asset: packages/ubuntu_font_flutter/Ubuntu-BI.ttf
+          weight: 700
+          style: italic
+        - asset: packages/ubuntu_font_flutter/Ubuntu-L.ttf
+          weight: 300
+        - asset: packages/ubuntu_font_flutter/Ubuntu-LI.ttf
+          weight: 300
+          style: italic
+        - asset: packages/ubuntu_font_flutter/Ubuntu-M.ttf
+          weight: 500
+        - asset: packages/ubuntu_font_flutter/Ubuntu-MI.ttf
+          weight: 500
+          style: italic
+
+  assets:
+    - assets/end-call.svg
+    - assets/mic-off.svg
+    - assets/mic-on.svg
+    - assets/video-off.svg
+    - assets/video-on.svg
