@@ -1,15 +1,15 @@
-class Configuration{
+class Configuration {
   static const mediaConstraints = <String, dynamic>{
     'video': {
       'mandatory': {
-        'minWidth':
-        '1280',
+        'minWidth': '1280',
         'minHeight': '720',
         'minFrameRate': '30',
       },
       'facingMode': 'user',
       'optional': [],
-    }
+    },
+    'audio': true
   };
 
   static const Map<String, dynamic> configuration = {
@@ -23,7 +23,7 @@ class Configuration{
     ]
   };
 
-  static const  Map<String, dynamic> dcConstraints = {
+  static const Map<String, dynamic> pcConstraints = {
     'mandatory': {
       'OfferToReceiveAudio': true,
       'OfferToReceiveVideo': true,

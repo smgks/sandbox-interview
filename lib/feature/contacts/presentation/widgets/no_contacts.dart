@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class EmptyContactWidget extends StatelessWidget{
+class EmptyContactWidget extends StatelessWidget {
   const EmptyContactWidget({Key? key}) : super(key: key);
 
   @override
@@ -17,5 +17,4 @@ class EmptyContactWidget extends StatelessWidget{
       ),
     );
   }
-
 }

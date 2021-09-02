@@ -14,7 +14,7 @@ class WsSource {
   WsSource(this._connectionWS);
 
   final ConnectionWS _connectionWS;
-  Map<User,DateTime> users = {};
+  Map<User, DateTime> users = {};
   Timer? _timer;
   User? _owner;
   late StreamSubscription _streamSubscription;
@@ -39,7 +39,7 @@ class WsSource {
     print(event);
     var messageRaw = json.decode(event as String);
     var message = Message.fromJson(messageRaw);
-    if (message.type == MessageType.status){
+    if (message.type == MessageType.status) {
       var userData = message.content as Status;
       var user = User(username: userData.user, idString: userData.id);
       if (user == _owner) {
@@ -62,7 +62,9 @@ class WsSource {
   void checkOnline() {
     List<User> toRemove = [];
     users.keys.forEach((User key) {
-      if (DateTime.now().millisecondsSinceEpoch - users[key]!.millisecondsSinceEpoch > 15000){
+      if (DateTime.now().millisecondsSinceEpoch -
+              users[key]!.millisecondsSinceEpoch >
+          15000) {
         toRemove.add(key);
       }
     });
@@ -73,13 +75,8 @@ class WsSource {
   }
 
   void isAliveEvent(User owner) {
-    _connectionWS.send(
-        json.encode(Message.status(
-            Status(
-              user: owner.username,
-              id: owner.idString
-            )
-        ).toJson())
-    );
+    _connectionWS.send(json.encode(
+        Message.status(Status(user: owner.username, id: owner.idString))
+            .toJson()));
   }
 }

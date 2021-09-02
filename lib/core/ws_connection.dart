@@ -4,7 +4,6 @@ import 'package:flutter_sandbox/di/injection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-///
 @injectable
 class ConnectionWS {
   WebSocketChannel? _socket;
@@ -14,12 +13,11 @@ class ConnectionWS {
 
   /// Connect to ws
   void connect() {
-    if (_socket != null &&_socket!.closeCode == null) {
-        return ;
+    if (_socket != null && _socket!.closeCode == null) {
+      return;
     }
     _socket = WebSocketChannel.connect(
-        Uri.parse(getIt<String>(instanceName: 'baseUrl'))
-    );
+        Uri.parse(getIt<String>(instanceName: 'baseUrl')));
     _controller = StreamController();
     _onConnect();
     _socket!.sink.done.then(_onDisconnect);
@@ -43,11 +41,9 @@ class ConnectionWS {
     _controller.sink.add(data);
   }
 
-  
   void _onDisconnect(data) {
     connect();
   }
 
-  void _onConnect() {
-  }
+  void _onConnect() {}
 }

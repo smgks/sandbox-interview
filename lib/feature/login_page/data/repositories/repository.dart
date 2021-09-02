@@ -3,9 +3,8 @@ import 'package:flutter_sandbox/feature/login_page/data/data_sources/data_source
 import 'package:flutter_sandbox/feature/login_page/domain/repositories/repository.dart';
 import 'package:injectable/injectable.dart';
 
-
 @Injectable(as: IRepository)
-class Repository extends IRepository{
+class Repository extends IRepository {
   final LocalDataSource _dataSource;
 
   Repository(this._dataSource);
@@ -27,5 +26,4 @@ class Repository extends IRepository{
   bool isUserRegistered() {
     return _dataSource.receiveCached() != null;
   }
-
 }

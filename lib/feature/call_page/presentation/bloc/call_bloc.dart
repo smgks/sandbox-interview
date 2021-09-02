@@ -24,38 +24,37 @@ class CallBloc extends Bloc<CallEvent, CallState> {
   Stream<CallState> mapEventToState(
     CallEvent event,
   ) async* {
-    if (event is InitCallEvent){
-      yield await prepareCall(
-          event
-      );
-    } else if (event is CameraUpdateEvent){
+    if (event is InitCallEvent) {
+      yield await prepareCall(event);
+      _initializeMedia.onEndCall = () {
+        add(EndCallEvent());
+      };
+    } else if (event is CameraUpdateEvent) {
       yield CallPrepared();
-    } else if (event is EndCallEvent){
+    } else if (event is EndCallEvent) {
+      _initializeMedia.endCall();
       await _initializeMedia.stop();
       yield CallEnded();
-    } else if (event is MuteAudioEvent){
-      micEnabled = _mediaDevice.muteMic(_initializeMedia.localStream);
+    } else if (event is MuteAudioEvent) {
+      micEnabled = !micEnabled;
+      _mediaDevice.muteMic(_initializeMedia.localStream, micEnabled);
       yield CallPrepared();
-    } else if (event is MuteVideoEvent){
+    } else if (event is MuteVideoEvent) {
       videoEnabled = _mediaDevice.muteVideo(_initializeMedia.localStream);
       yield CallPrepared();
-    } else if (event is SwitchCameraEvent){
+    } else if (event is SwitchCameraEvent) {
       _mediaDevice.switchCamera(_initializeMedia.localStream);
       yield CallPrepared();
     }
   }
 
-
   /// Prepare data for calling
-  Future<CallPrepared> prepareCall(
-      InitCallEvent event
-  ) async {
+  Future<CallPrepared> prepareCall(InitCallEvent event) async {
     await _initializeMedia.initializeConnection(
-      event.localRender,
-      event.remoteRender,
-      event.toUser,
-      onStreamChanged: (){add(CameraUpdateEvent());}
-    );
+        event.localRender, event.remoteRender, event.toUser,
+        onStreamChanged: () {
+      add(CameraUpdateEvent());
+    });
     await _initializeMedia.startMessaging(offer: event.offer);
     return CallPrepared();
   }

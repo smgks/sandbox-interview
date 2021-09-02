@@ -25,14 +25,11 @@ class CallPage extends StatelessWidget {
         bloc: bloc,
         builder: (context, state) {
           if (state is CallInitial) {
-            bloc.add(
-                InitCallEvent(
-                  localRender: localRender,
-                  remoteRender: remoteRender,
-                  toUser: toUser,
-                  offer: offer
-                )
-            );
+            bloc.add(InitCallEvent(
+                localRender: localRender,
+                remoteRender: remoteRender,
+                toUser: toUser,
+                offer: offer));
           }
           if (state is CallPrepared) {
             return SafeArea(
@@ -43,14 +40,19 @@ class CallPage extends StatelessWidget {
                       children: [
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                              maxHeight: MediaQuery.of(context).size.height - padding.top - padding.bottom,
-                              maxWidth: MediaQuery.of(context).size.width - padding.left - padding.right
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 9/16,
-                            child: RTCVideoView(
-                                remoteRender
-                            ),
+                              maxHeight: MediaQuery.of(context).size.height -
+                                  padding.top -
+                                  padding.bottom,
+                              maxWidth: MediaQuery.of(context).size.width -
+                                  padding.left -
+                                  padding.right),
+                          child: Wrap(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 9 / 16,
+                                child: RTCVideoView(remoteRender),
+                              )
+                            ],
                           ),
                         ),
                         Expanded(child: Container())
@@ -60,10 +62,8 @@ class CallPage extends StatelessWidget {
                   Container(
                     height: 120,
                     child: AspectRatio(
-                      aspectRatio: 9/16,
-                      child: RTCVideoView(
-                          localRender
-                      ),
+                      aspectRatio: 9 / 16,
+                      child: RTCVideoView(localRender),
                     ),
                   ),
                 ],
@@ -72,12 +72,8 @@ class CallPage extends StatelessWidget {
           }
           if (state is CallEnded) {
             Future.delayed(Duration.zero).then((value) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ContactsList()
-                  )
-              );
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => ContactsList()));
             });
           }
           return Center(
@@ -85,52 +81,65 @@ class CallPage extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              bloc.add(MuteAudioEvent());
-            },
-            tooltip: 'Increment',
-            child: SvgPicture.asset(
-                bloc.micEnabled ? 'assets/mic-off.svg' : 'assets/mic-on.svg',
-                semanticsLabel: 'Acme Logo'
-            ),
-          ),
-          SizedBox(width: 16,),
-          FloatingActionButton(
-            onPressed: () {
-              bloc.add(MuteVideoEvent());
-            },
-            tooltip: 'Increment',
-            child: SvgPicture.asset(
-                bloc.videoEnabled ? 'assets/video-off.svg' : 'assets/video-on.svg',
-                semanticsLabel: 'Acme Logo'
-            ),
-          ),
-          SizedBox(width: 16,),
-          FloatingActionButton(
-            onPressed: () {
-              bloc.add(SwitchCameraEvent());
-            },
-            tooltip: 'Increment',
-            child: Icon(
-              Icons.switch_camera_outlined
-            ),
-          ),
-          SizedBox(width: 16,),
-          FloatingActionButton(
-            onPressed: () async {
-              bloc.add(EndCallEvent());
-            },
-            tooltip: 'Increment',
-            child: SvgPicture.asset(
-                'assets/end-call.svg',
-                semanticsLabel: 'Acme Logo'
-            ),
-          ),
-        ],
+      floatingActionButton: BlocBuilder<CallBloc, CallState>(
+        bloc: bloc,
+        builder: (context, state) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: () {
+                  bloc.add(MuteAudioEvent());
+                },
+                tooltip: 'Increment',
+                child: SvgPicture.asset(
+                    bloc.micEnabled
+                        ? 'assets/mic-on.svg'
+                        : 'assets/mic-off.svg',
+                    semanticsLabel: 'Acme Logo'),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: () {
+                  bloc.add(MuteVideoEvent());
+                },
+                tooltip: 'Increment',
+                child: SvgPicture.asset(
+                    bloc.videoEnabled
+                        ? 'assets/video-on.svg'
+                        : 'assets/video-off.svg',
+                    semanticsLabel: 'Acme Logo'),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: () {
+                  bloc.add(SwitchCameraEvent());
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.switch_camera_outlined),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                onPressed: () async {
+                  bloc.add(EndCallEvent());
+                },
+                tooltip: 'Increment',
+                child: SvgPicture.asset('assets/end-call.svg',
+                    semanticsLabel: 'Acme Logo'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

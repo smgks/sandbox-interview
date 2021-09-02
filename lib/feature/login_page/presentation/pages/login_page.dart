@@ -7,7 +7,6 @@ import 'package:flutter_sandbox/feature/login_page/presentation/bloc/login_page/
 import 'package:flutter_sandbox/feature/login_page/presentation/widgets/idle_content.dart';
 import 'package:flutter_sandbox/feature/login_page/presentation/widgets/loading_content.dart';
 
-
 class LoginPage extends StatelessWidget {
   final bloc = getIt<LoginBloc>();
 
@@ -21,24 +20,22 @@ class LoginPage extends StatelessWidget {
             builder: (context, state) {
               if (state is LoginIdle) {
                 return IdleContent();
-              } else if (state is LoginError){
+              } else if (state is LoginError) {
                 Future.delayed(Duration.zero).then((value) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(state.message)
-                      )
-                  );
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(state.message)));
                 });
                 return LoadingContent();
               } else if (state is LoginIn) {
                 Future.delayed(Duration.zero).then((value) {
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => ContactsList(),)
-                  );
+                      MaterialPageRoute(
+                        builder: (context) => ContactsList(),
+                      ));
                 });
                 return LoadingContent();
-              } else if (state is LoginInitial){
+              } else if (state is LoginInitial) {
                 return LoadingContent();
               }
               throw UnimplementedError();

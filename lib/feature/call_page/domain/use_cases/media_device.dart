@@ -1,7 +1,6 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:injectable/injectable.dart';
 
-
 @injectable
 class MediaDevice {
   // Switch camera
@@ -10,10 +9,10 @@ class MediaDevice {
   }
 
   /// Mute mic and return current state
-  bool muteMic(MediaStream localStream) {
-    bool enabled = localStream.getAudioTracks()[0].enabled;
-    localStream.getAudioTracks()[0].enabled = !enabled;
-    return !enabled;
+  void muteMic(MediaStream localStream, bool enable) {
+    localStream.getAudioTracks().forEach((element) {
+      element.enabled = enable;
+    });
   }
 
   /// Disable video and return current state

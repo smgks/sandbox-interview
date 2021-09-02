@@ -14,24 +14,18 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class FakeWSPeer{
+class FakeWSPeer {
   late WebSocketChannel _socket;
   late Timer _timer;
   bool hasOffer = false;
   bool hasStatus = false;
-
 
   void connect() {
     _socket = WebSocketChannel.connect(
         Uri.parse(getIt<String>(instanceName: 'baseUrl')));
     _timer = Timer.periodic(Duration(seconds: 3), (time) {
       _socket.sink.add(json.encode(
-          Message.status(
-              Status(
-                  user: 'fakefake0',
-                  id: 'fakefake0'
-              )).toJson())
-      );
+          Message.status(Status(user: 'fakefake0', id: 'fakefake0')).toJson()));
     });
 
     _socket.stream.listen((event) {
@@ -66,12 +60,11 @@ void main() async {
     ..delete('user_cache');
   configureDependencies();
 
-
   testWidgets("test call request", (WidgetTester tester) async {
     var fakeWs = FakeWSPeer();
     fakeWs.connect();
 
-    fakeWs.onOffer = (Offer data){
+    fakeWs.onOffer = (Offer data) {
       data = data;
     };
     await tester.pumpWidget(MyApp());

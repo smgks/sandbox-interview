@@ -15,17 +15,18 @@ class Repository extends IRepository {
   late StreamSubscription _controller;
 
   Repository(
-      this._wsSource,
-      this._localDataSource,
-    );
+    this._wsSource,
+    this._localDataSource,
+  );
 
   Stream<Set<User>> get userUpdates => _wsSource.userUpdates;
 
   @override
   void initStatus(void Function(Message) onOffer) {
     _wsSource.listenUsers(getLocalUser());
-    _controller = _wsSource.messages.listen((message){
-      if(message.type == 'offer' && message.from != _localDataSource.receiveCached()){
+    _controller = _wsSource.messages.listen((message) {
+      if (message.type == 'offer' &&
+          message.from != _localDataSource.receiveCached()) {
         onOffer(message);
       }
     });
@@ -33,11 +34,8 @@ class Repository extends IRepository {
 
   @override
   User getLocalUser() {
-    var localUser =  _localDataSource.receiveCached();
-    return User(
-        username: localUser.username,
-        idString: localUser.idString
-    );
+    var localUser = _localDataSource.receiveCached();
+    return User(username: localUser.username, idString: localUser.idString);
   }
 
   Future<void> cancel() async {

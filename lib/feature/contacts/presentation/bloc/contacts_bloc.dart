@@ -17,7 +17,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   final IRepository _repository;
   late StreamSubscription _streamSubscription;
 
-  ContactsBloc(this._repository) : super(ContactsInitial.empty()){
+  ContactsBloc(this._repository) : super(ContactsInitial.empty()) {
     add(InitiateConnectionEvent());
     _streamSubscription = _repository.userUpdates.listen((event) {
       add(_UsersChangedEvent(event));
@@ -35,19 +35,19 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     ContactsEvent event,
   ) async* {
     if (event is InitiateConnectionEvent) {
-      _repository.initStatus((Message message){
+      _repository.initStatus((Message message) {
         add(OfferReceivedEvent(message.content as Offer, message.from!));
       });
     } else if (event is DropConnectionEvent) {
       await close();
     } else if (event is OfferReceivedEvent) {
-      yield OfferReceivedState(event.offer,event.from);
+      yield OfferReceivedState(event.offer, event.from);
     } else if (event is _UsersChangedEvent) {
-      yield ContactsInitial(
-        users: event.users
-      );
+      yield ContactsInitial(users: event.users);
     } else if (event is LogOutEvent) {
+      await _repository.cancel();
       await _repository.logout();
+      await close();
       yield LogOutState();
     }
   }

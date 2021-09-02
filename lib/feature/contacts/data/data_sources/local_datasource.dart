@@ -9,7 +9,8 @@ class LocalUserDataSource {
   User receiveCached() {
     return box.get(key) as User;
   }
+
   Future<void> removeCached() async {
-     await box.clear();
+    await box.clear();
   }
 }

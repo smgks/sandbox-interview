@@ -1,7 +1,7 @@
 import 'message.dart';
 
 /// Describes online status
-class Status extends MsgContentBase{
+class Status extends MsgContentBase {
   Status({
     required this.user,
     required this.id,
@@ -10,14 +10,13 @@ class Status extends MsgContentBase{
   final String user;
   final String id;
 
+  Map<String, dynamic> toJson() => {
+        'user': user,
+        'id': id,
+      };
 
-  Map<String,dynamic> toJson() => {
-    'user':user,
-    'id':id,
-  };
-
-  factory Status.fromJson(Map<String,dynamic> data) => Status(
-    user : data['user'] as String,
-    id: data['id'] as String,
-  );
+  factory Status.fromJson(Map<String, dynamic> data) => Status(
+        user: data['user'] as String,
+        id: data['id'] as String,
+      );
 }

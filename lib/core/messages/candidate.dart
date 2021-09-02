@@ -3,7 +3,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'message.dart';
 
 /// RTCIceCandidate wrapper
-class Candidate extends MsgContentBase{
+class Candidate extends MsgContentBase {
   Candidate({
     required this.candidate,
     required this.sdpMid,
@@ -15,17 +15,17 @@ class Candidate extends MsgContentBase{
   final int sdpMlineIndex;
 
   RTCIceCandidate toRTCIceCandidate() =>
-      RTCIceCandidate(candidate, sdpMid,sdpMlineIndex);
+      RTCIceCandidate(candidate, sdpMid, sdpMlineIndex);
 
-  Map<String,dynamic> toJson() => {
-    'candidate':candidate,
-    'sdpMid':sdpMid,
-    'sdpMlineIndex':sdpMlineIndex,
-  };
+  Map<String, dynamic> toJson() => {
+        'candidate': candidate,
+        'sdpMid': sdpMid,
+        'sdpMlineIndex': sdpMlineIndex,
+      };
 
-  factory Candidate.fromJson(Map<String,dynamic> data) => Candidate(
-    candidate : data['candidate'] as String,
-    sdpMid: data['sdpMid'] as String,
-    sdpMlineIndex: data['sdpMlineIndex'] as int,
-  );
+  factory Candidate.fromJson(Map<String, dynamic> data) => Candidate(
+        candidate: data['candidate'] as String,
+        sdpMid: data['sdpMid'] as String,
+        sdpMlineIndex: data['sdpMlineIndex'] as int,
+      );
 }

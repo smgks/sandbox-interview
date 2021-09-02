@@ -3,8 +3,7 @@ part of 'login_bloc.dart';
 @immutable
 abstract class LoginEvent {}
 
-class CheckRegistered extends LoginEvent{}
-
+class CheckRegistered extends LoginEvent {}
 
 class ValidateUserName extends LoginEvent {
   final String username;

@@ -19,26 +19,25 @@ class IdleContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            LoginInput(controller: _controller, formKey: formKey,),
+            LoginInput(
+              controller: _controller,
+              formKey: formKey,
+            ),
             MaterialButton(
               onPressed: () {
-                if (formKey.currentState!.validate()){
-                  BlocProvider.of<LoginBloc>(context).add(
-                      LoginNew(_controller.text)
-                  );
+                if (formKey.currentState!.validate()) {
+                  BlocProvider.of<LoginBloc>(context)
+                      .add(LoginNew(_controller.text));
                 }
               },
               child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'LOGIN',
-                      style: TextStyle(
-                          fontSize: 32
-                      ),
-                    ),
-                  )
-              ),
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'LOGIN',
+                  style: TextStyle(fontSize: 32),
+                ),
+              )),
             )
           ],
         ),

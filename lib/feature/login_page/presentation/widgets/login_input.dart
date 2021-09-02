@@ -6,7 +6,8 @@ class LoginInput extends StatelessWidget {
   const LoginInput({
     required this.formKey,
     required TextEditingController controller,
-  }) : _controller = controller, super();
+  })  : _controller = controller,
+        super();
   final GlobalKey formKey;
 
   final TextEditingController _controller;
@@ -18,10 +19,9 @@ class LoginInput extends StatelessWidget {
     return Form(
       key: formKey,
       child: TextFormField(
+        key: Key('login_input'),
         decoration: InputDecoration(
-            hintText: 'Enter user name',
-            border: OutlineInputBorder()
-        ),
+            hintText: 'Enter user name', border: OutlineInputBorder()),
         controller: _controller,
         validator: userNameValid,
       ),

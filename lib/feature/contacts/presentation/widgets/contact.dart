@@ -7,7 +7,7 @@ import 'package:flutter_sandbox/feature/contacts/presentation/bloc/contacts_bloc
 import 'package:flutter_svg/svg.dart';
 
 /// Presents single contact
-class ContactWidget extends StatelessWidget{
+class ContactWidget extends StatelessWidget {
   final User contact;
   const ContactWidget({Key? key, required this.contact}) : super(key: key);
 
@@ -21,24 +21,22 @@ class ContactWidget extends StatelessWidget{
           children: [
             Expanded(child: Text(contact.username)),
             InkWell(
+              key: Key('contact_key'),
               onTap: () {
-                BlocProvider.of<ContactsBloc>(context).add(DropConnectionEvent());
+                BlocProvider.of<ContactsBloc>(context)
+                    .add(DropConnectionEvent());
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CallPage(contact),
-                    )
-                );
+                    ));
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Transform.rotate(
                   angle: -2.4,
-                  child: SvgPicture.asset(
-                      'assets/end-call.svg',
-                      semanticsLabel: 'Acme Logo',
-                      color: Colors.green
-                  ),
+                  child: SvgPicture.asset('assets/end-call.svg',
+                      semanticsLabel: 'Acme Logo', color: Colors.green),
                 ),
               ),
             ),

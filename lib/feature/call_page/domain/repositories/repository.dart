@@ -4,10 +4,9 @@ import 'package:flutter_sandbox/feature/call_page/data/data_sources/local_dataso
 import 'package:flutter_sandbox/feature/call_page/data/data_sources/ws_source.dart';
 
 /// Repository for messaging
-abstract class IRepository{
+abstract class IRepository {
   final LocalUserDataSource localUserDataSource;
   final WsSource wsSource;
-
 
   IRepository(this.localUserDataSource, this.wsSource);
 

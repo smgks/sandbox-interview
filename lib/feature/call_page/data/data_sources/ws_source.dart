@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-
 import 'package:flutter_sandbox/core/messages/message.dart';
 import 'package:flutter_sandbox/core/ws_connection.dart';
 import 'package:injectable/injectable.dart';
@@ -13,6 +12,7 @@ class WsSource {
 
   StreamController<Message> _messageController = StreamController();
   late StreamSubscription _subscription;
+
   /// All messages from remote
   Stream<Message> get messages => _messageController.stream;
   final ConnectionWS _connectionWS;
@@ -25,16 +25,17 @@ class WsSource {
 
   /// Handle messages and sends it to _messageController
   void _handleMessage(event) {
+    if (event == null) return;
     var messageRaw = json.decode(event as String);
     var message = Message.fromJson(messageRaw);
-    if (message.type != MessageType.status){
+    if (message.type != MessageType.status) {
       _messageController.sink.add(message);
       print(event);
     }
   }
 
   /// Send message to ws
-  void send(Message message){
+  void send(Message message) {
     _connectionWS.send(json.encode(message.toJson()));
   }
 
